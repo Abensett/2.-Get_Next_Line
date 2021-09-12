@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_strdup(const char *src)
 {
@@ -78,7 +78,7 @@ char	*get_next_line(int fd)
 	char		buff[BUFFER_SIZE + 1 ];
 	static char	*line[2147483647];
 	char		*tmp;
-	
+
 	len = 1;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);

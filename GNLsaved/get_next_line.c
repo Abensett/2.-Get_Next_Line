@@ -52,7 +52,7 @@ void	ft_memdel(void **ptr)
 
 char	*get_line_printed(char **line, ssize_t len)
 {
-	char	*l_t_p;
+	char	*to_print;
 	char	*tmp;
 
 	tmp = NULL;
@@ -62,13 +62,13 @@ char	*get_line_printed(char **line, ssize_t len)
 		return (NULL);
 	}
 	if (len == 0)
-		l_t_p = ft_strdup(*line);
-	l_t_p = ft_substr(*line, 0, (ft_strchr(*line, '\n') + 1 - *line));
+		to_print = ft_strdup(*line);
+	to_print = ft_substr(*line, 0, (ft_strchr(*line, '\n') + 1 - *line));
 	if (len > 0)
-		tmp = ft_strdup((*line + (ft_strlen(l_to_p))));
+		tmp = ft_strdup((*line + (ft_strlen(to_print))));
 	ft_memdel((void **)line);
 	*line = tmp;
-	return (l_t_p);
+	return (to_print);
 }
 
 char	*get_next_line(int fd)
