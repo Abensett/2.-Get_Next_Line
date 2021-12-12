@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abensett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 17:04:50 by abensett          #+#    #+#             */
-/*   Updated: 2021/06/09 18:31:59 by abensett         ###   ########.fr       */
+/*   Updated: 2021/12/12 21:01:06 by abensett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_strdup(const char *src)
 {
@@ -29,17 +29,6 @@ char	*ft_strdup(const char *src)
 	return (dup);
 }
 
-char	*ft_strnew(size_t size)
-{
-	char	*s;
-
-	s = malloc((size + 1) * sizeof(char));
-	if (s == NULL)
-		return (NULL);
-	ft_memset(s, 0, size);
-	return (s);
-}
-
 void	ft_memdel(void **ptr)
 {
 	if (*ptr && ptr)
@@ -52,51 +41,45 @@ void	ft_memdel(void **ptr)
 
 char	*get_line_printed(char **line, ssize_t len)
 {
-	char	*line_to_print;
-	int		i;
+	char	*to_print;
 	char	*tmp;
 
-	i = 0;
-	if (len == 0)
-		line_to_print = ft_strdup(*line);
-	else
-		line_to_print = ft_substr(*line, 0, (ft_strchr(*line, '\n') - *line));
-	while (line_to_print[i])
+	tmp = NULL;
+	if (len == 0 && **line == '\0')
 	{
-		write(1, &line_to_print[i], 1);
-		i++;
+		ft_memdel((void **) line);
+		return (NULL);
 	}
-	if (len != 0)
-		write(1, "\n", 1);
-	if (len > 0)
-		tmp = ft_strdup((*line + (ft_strlen(line_to_print) + 1)));
+	if (len == 0)
+		to_print = ft_strdup(*line);
 	else
-		tmp = ft_strdup((*line + ft_strlen(line_to_print)));
+		to_print = ft_substr(*line, 0, (ft_strchr(*line, '\n') + 1 - *line));
+	if (len > 0)
+		tmp = ft_strdup((*line + (ft_strlen(to_print))));
 	ft_memdel((void **)line);
 	*line = tmp;
-	return (line_to_print);
+	return (to_print);
 }
 
 char	*get_next_line(int fd)
 {
 	ssize_t		len;	
-	char		buff[BUFFER_SIZE + (len = 1)];
-	static char	*line[FD_MAX + 1];
+	char		buff[BUFFER_SIZE + 1];
+	static char	*line[2147483647];
 	char		*tmp;
 
+	len = 1;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (line[fd] == NULL)
-		line[fd] = ft_strnew(0);
 	while (!ft_strchr(line[fd], '\n') && len > 0)
 	{
 		len = read(fd, buff, BUFFER_SIZE);
+		if (len < 0)
+			return (NULL);
 		buff[len] = '\0';
 		tmp = ft_strjoin(line[fd], buff);
 		ft_memdel((void **)&line[fd]);
 		line[fd] = tmp;
 	}
-	if (len < 0)
-		return (NULL);
 	return (get_line_printed(&line[fd], len));
 }
